@@ -2,7 +2,7 @@
 
 import { fetchSSE } from '../../utils/fetch-sse'
 import { isEmpty } from 'lodash-es'
-import { chatgptWebModelKeys, getUserConfig, Models } from '../../config/index.mjs'
+import { chatgptWebModelKeys, getUserConfig, Models, Prompts } from '../../config/index.mjs'
 import { pushRecord, setAbortController } from './shared.mjs'
 import Browser from 'webextension-polyfill'
 
@@ -64,6 +64,8 @@ export async function generateAnswersWithChatgptWebApi(port, question, session, 
   console.debug('models', models)
   const config = await getUserConfig()
   const selectedModel = Models[config.modelName].value
+  const selectedPrompt = Prompts[config.promptName].value
+  question = selectedPrompt + '\n' + question
   const usedModel =
     models && models.includes(selectedModel) ? selectedModel : Models[chatgptWebModelKeys[0]].value
   console.debug('usedModel', usedModel)

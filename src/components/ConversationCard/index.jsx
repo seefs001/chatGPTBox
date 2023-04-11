@@ -10,7 +10,7 @@ import FileSaver from 'file-saver'
 import { render } from 'preact'
 import FloatingToolbar from '../FloatingToolbar'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
-import { Models } from '../../config/index.mjs'
+import { Models,Prompts } from '../../config/index.mjs'
 import { useTranslation } from 'react-i18next'
 import DeleteButton from '../DeleteButton'
 import { useConfig } from '../../hooks/use-config.mjs'
@@ -233,6 +233,25 @@ function ConversationCard(props) {
               return (
                 <option value={key} key={key} selected={key === session.modelName}>
                   {t(model.desc)}
+                </option>
+              )
+            })}
+          </select>
+          <select
+            style={props.notClampSize ? {} : { width: windowSize[0] * 0.05 + 'px' }}
+            className="normal-button"
+            required
+            onChange={(e) => {
+              const prompt = e.target.value
+              const newSession = { ...session, prompt }
+              if (config.autoRegenAfterSwitchModel) getRetryFn(newSession)()
+              else setSession(newSession)
+            }}
+          >
+            {Object.entries(Prompts).map(([key, prompt]) => {
+              return (
+                <option value={prompt} key={key} selected={prompt === session.prompt}>
+                  {t(key)}
                 </option>
               )
             })}

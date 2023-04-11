@@ -10,6 +10,7 @@ import {
   isUsingMultiModeModel,
   ModelMode,
   Models,
+  Prompts,
   setUserConfig,
   ThemeMode,
   TriggerMode,
@@ -103,6 +104,29 @@ function GeneralPart({ config, updateConfig }) {
               return (
                 <option value={key} key={key} selected={key === config.modelName}>
                   {t(model.desc)}
+                </option>
+              )
+            })}
+          </select>
+          <select
+            style={
+              isUsingApiKey(config) ||
+              isUsingMultiModeModel(config) ||
+              isUsingCustomModel(config) ||
+              isUsingAzureOpenAi(config)
+                ? 'width: 50%;'
+                : undefined
+            }
+            required
+            onChange={(e) => {
+              const promptName = e.target.value
+              updateConfig({ promptName: promptName })
+            }}
+          >
+            {Object.entries(Prompts).map(([key, prompt]) => {
+              return (
+                <option value={key} key={key} selected={key === config.promptName}>
+                  {t(prompt.desc)}
                 </option>
               )
             })}
